@@ -5,7 +5,7 @@ Rust wrapper for the libvpx (VP8/VP9) codec library.
 ```rust
 extern crate vpx;
 
-use vpx::Decoder;
+use vpx::{Codec, Decoder};
 
 fn main() {
 	let frames = vec![
@@ -13,7 +13,7 @@ fn main() {
 		...
 	];
 
-    let mut decoder = Decoder::new().unwrap();
+    let mut decoder = Decoder::new(Codec::VP8).unwrap();
 
     for frame in frames {
         for image in decoder.decode(frame).expect("Failed to decode frame") {
