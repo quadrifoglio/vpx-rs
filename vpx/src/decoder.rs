@@ -4,7 +4,7 @@ use std::ptr;
 use std::mem;
 
 use lib;
-use super::Image;
+use image::Image;
 use error::{self, Result};
 
 /// Decoder object (context).
