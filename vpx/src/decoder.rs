@@ -38,7 +38,7 @@ impl Decoder {
 
     /// Decode the specified VPX data. Returns an iterator over the available frames that have been
     /// decoded.
-    pub fn decode(&mut self, data: Vec<u8>) -> Result<Frames> {
+    pub fn decode(&mut self, data: Vec<u8>) -> Result<Images> {
         unsafe {
             let ptr = data.as_ptr();
             let size = data.len() as u32;
@@ -48,7 +48,7 @@ impl Decoder {
                 bail!(error::libvpx(err));
             }
 
-            let frames = Frames {
+            let frames = Images {
                 dec: self,
                 iter: ptr::null_mut(),
             };
@@ -58,17 +58,17 @@ impl Decoder {
     }
 }
 
-pub struct Frames<'a> {
+pub struct Images<'a> {
     dec: &'a mut Decoder,
-    iter: *mut lib::vpx_codec_iter_t,
+    iter: lib::vpx_codec_iter_t,
 }
 
-impl<'a> ::std::iter::Iterator for Frames<'a> {
+impl<'a> ::std::iter::Iterator for Images<'a> {
     type Item = Image;
 
     fn next(&mut self) -> Option<Self::Item> {
         unsafe {
-            let img = lib::vpx_codec_get_frame(&mut self.dec.ctx, self.iter);
+            let img = lib::vpx_codec_get_frame(&mut self.dec.ctx, &mut self.iter);
 
             if img == ptr::null_mut() {
                 None

@@ -99,10 +99,11 @@ fn main() {
     let output = env::args().nth(2).expect("Please specify an output folder for the decoded frames");
 
     let video = Video::open(input);
+    let mut decoder = Decoder::new().unwrap();
 
     for frame in video {
-        println!("Frame of {} bytes", frame.len());
+        for image in decoder.decode(frame).unwrap() {
+            println!("Decoded image: {}x{}", image.width(), image.height());
+        }
     }
-
-    let decoder = Decoder::new();
 }
