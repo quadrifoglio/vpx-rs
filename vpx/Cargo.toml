@@ -4,3 +4,5 @@ version = "0.1.0"
 authors = ["quadrifoglio <quadrifoglio.clement@protonmail.com>"]
 
 [dependencies]
+error-chain = "0.11.0"
+vpx-sys = { path = "../vpx-sys" }
