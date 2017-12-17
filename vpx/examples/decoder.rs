@@ -6,7 +6,7 @@ extern crate vpx;
 
 use std::env;
 use std::fs::File;
-use std::io::Read;
+use std::io::{Read, Seek, SeekFrom};
 
 use vpx::{Codec, Decoder};
 
@@ -27,26 +27,9 @@ impl Video {
             panic!("Invalid IVF input: wrong signature");
         }
 
-        let mut ver = vec![0u8; 2];
-        f.read(&mut ver).unwrap();
-
-        let mut header_length = vec![0u8; 2];
-        f.read(&mut header_length).unwrap();
-
-        let mut fourcc = vec![0u8; 4];
-        f.read(&mut fourcc).unwrap();
-
-        let mut width = vec![0u8; 2];
-        f.read(&mut width).unwrap();
-
-        let mut height = vec![0u8; 2];
-        f.read(&mut height).unwrap();
-
-        let mut framerate = vec![0u8; 4];
-        f.read(&mut framerate).unwrap();
-
-        let mut timescale = vec![0u8; 4];
-        f.read(&mut timescale).unwrap();
+        // Ignore unused IVF header fields (version, length, fourcc, width, height, framerate,
+        // timescale => 20 bytes).
+        f.seek(SeekFrom::Current(20)).unwrap();
 
         let mut frames = vec![0u8; 4];
         f.read(&mut frames).unwrap();
@@ -67,6 +50,7 @@ impl Video {
     }
 }
 
+// Iterator over the video frames.
 impl ::std::iter::Iterator for Video {
     type Item = Vec<u8>;
 
@@ -83,8 +67,8 @@ impl ::std::iter::Iterator for Video {
             size |= (size_buf[4 - i - 1] as u32) << (4 - i - 1) * 8;
         }
 
-        let mut timestamp = vec![0u8; 8];
-        self.f.read(&mut timestamp).unwrap();
+        // Skip the timestamp (unused).
+        self.f.seek(SeekFrom::Current(8)).unwrap();
 
         let mut data = vec![0u8; size as usize];
         self.f.read(&mut data).unwrap();
