@@ -13,6 +13,8 @@ fn main() {
 		...
 	];
 
+    let mut decoder = Decoder::new().unwrap();
+
     for frame in frames {
         for image in decoder.decode(frame).expect("Failed to decode frame") {
             println!("Decoded image: {}x{}", image.width(), image.height());
