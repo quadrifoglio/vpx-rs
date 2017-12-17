@@ -8,3 +8,5 @@ extern crate vpx_sys as lib;
 
 pub mod error;
 pub mod decoder;
+
+pub use decoder::Decoder;
