@@ -8,7 +8,7 @@ use std::env;
 use std::fs::File;
 use std::io::Read;
 
-use vpx::Decoder;
+use vpx::{Codec, Decoder};
 
 struct Video {
     f: File,
@@ -99,7 +99,7 @@ fn main() {
     let output = env::args().nth(2).expect("Please specify an output folder for the decoded frames");
 
     let video = Video::open(input);
-    let mut decoder = Decoder::new().unwrap();
+    let mut decoder = Decoder::new(Codec::VP8).unwrap();
 
     for frame in video {
         for image in decoder.decode(frame).unwrap() {

@@ -11,3 +11,9 @@ pub mod image;
 pub mod decoder;
 
 pub use decoder::Decoder;
+
+/// Available codecs.
+pub enum Codec {
+    VP8,
+    VP9,
+}

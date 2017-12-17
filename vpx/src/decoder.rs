@@ -4,6 +4,7 @@ use std::ptr;
 use std::mem;
 
 use lib;
+use super::Codec;
 use image::Image;
 use error::{self, Result};
 
@@ -14,13 +15,18 @@ pub struct Decoder {
 
 impl Decoder {
     /// Create a new VPX Decoder.
-    pub fn new() -> Result<Decoder> {
+    pub fn new(codec: Codec) -> Result<Decoder> {
         unsafe {
             let mut ctx: lib::vpx_codec_ctx_t = mem::uninitialized();
 
+            let iface = match codec {
+                Codec::VP8 => lib::vpx_codec_vp8_dx(),
+                Codec::VP9 => lib::vpx_codec_vp9_dx(),
+            };
+
             let err = lib::vpx_codec_dec_init_ver(
                 &mut ctx,
-                lib::vpx_codec_vp8_dx(),
+                iface,
                 ptr::null_mut(),
                 0,
                 lib::VPX_DECODER_ABI_VERSION as i32
