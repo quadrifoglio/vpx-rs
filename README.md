@@ -8,10 +8,10 @@ extern crate vpx;
 use vpx::{Codec, Decoder};
 
 fn main() {
-	let frames = vec![
-		vec![ /* VP8/VP9 binary frame */ ],
-		...
-	];
+    let frames = vec![
+        vec![ /* VP8/VP9 binary frame */ ],
+        ...
+    ];
 
     let mut decoder = Decoder::new(Codec::VP8).unwrap();
 
